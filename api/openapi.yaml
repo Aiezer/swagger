@@ -1,0 +1,680 @@
+openapi: 3.0.0
+info:
+  title: CommerceX API
+  description: API de vendas da aplicação CommerceX
+  version: 1.0.0
+servers:
+- url: /
+paths:
+  /signup:
+    post:
+      tags:
+      - auth
+      summary: Cadastrar um novo usuário
+      operationId: signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/signup_body'
+        required: true
+      responses:
+        "201":
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "400":
+          description: Email já existe
+        "500":
+          description: Erro ao criar usuário
+      x-swagger-router-controller: Auth
+  /login:
+    post:
+      tags:
+      - auth
+      summary: Login de usuário
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/login_body'
+        required: true
+      responses:
+        "200":
+          description: Token gerado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "401":
+          description: Credenciais inválidas
+      x-swagger-router-controller: Auth
+  /sales:
+    post:
+      tags:
+      - sales
+      summary: Criar uma venda
+      operationId: createSale
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sales_body'
+        required: true
+      responses:
+        "201":
+          description: Venda criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201_1'
+        "400":
+          description: Erro na criação da venda
+        "500":
+          description: Erro interno do servidor
+      x-swagger-router-controller: Sales
+  /clients:
+    get:
+      tags:
+      - clients
+      summary: Listar todos os clientes
+      operationId: getClients
+      responses:
+        "200":
+          description: Lista de clientes retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_1'
+                x-content-type: application/json
+        "500":
+          description: Erro ao listar clientes
+      x-swagger-router-controller: Clients
+    post:
+      tags:
+      - clients
+      summary: Criar um novo cliente
+      operationId: createClient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/clients_body'
+        required: true
+      responses:
+        "201":
+          description: Cliente criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201_2'
+        "400":
+          description: "Erro ao criar cliente, dados inválidos"
+        "500":
+          description: Erro interno ao criar cliente
+      x-swagger-router-controller: Clients
+  /clients/{id}:
+    get:
+      tags:
+      - clients
+      summary: Detalhar um cliente
+      operationId: getClientById
+      parameters:
+      - name: id
+        in: path
+        description: ID do cliente
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: month
+        in: query
+        description: Filtrar vendas por mês
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: year
+        in: query
+        description: Filtrar vendas por ano
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Detalhes do cliente retornados com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+        "404":
+          description: Cliente não encontrado
+        "500":
+          description: Erro interno ao detalhar cliente
+      x-swagger-router-controller: Clients
+    put:
+      tags:
+      - clients
+      summary: Atualizar um cliente
+      operationId: updateClient
+      parameters:
+      - name: id
+        in: path
+        description: ID do cliente
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/clients_id_body'
+        required: true
+      responses:
+        "200":
+          description: Cliente atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201_2'
+        "400":
+          description: "Erro ao atualizar cliente, dados inválidos"
+        "404":
+          description: Cliente não encontrado
+        "500":
+          description: Erro interno ao atualizar cliente
+      x-swagger-router-controller: Clients
+    delete:
+      tags:
+      - clients
+      summary: Deletar um cliente
+      operationId: deleteClient
+      parameters:
+      - name: id
+        in: path
+        description: ID do cliente
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Cliente deletado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "404":
+          description: Cliente não encontrado
+        "500":
+          description: Erro interno ao deletar cliente
+      x-swagger-router-controller: Clients
+  /products:
+    get:
+      tags:
+      - products
+      summary: Listar todos os produtos
+      operationId: getProducts
+      responses:
+        "200":
+          description: Lista de produtos retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_4'
+                x-content-type: application/json
+        "500":
+          description: Erro ao listar produtos
+      x-swagger-router-controller: Products
+    post:
+      tags:
+      - products
+      summary: Criar um novo produto
+      operationId: createProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/products_body'
+        required: true
+      responses:
+        "201":
+          description: Produto criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+        "400":
+          description: "Erro ao criar produto, dados inválidos"
+        "500":
+          description: Erro interno ao criar produto
+      x-swagger-router-controller: Products
+  /products/{id}:
+    get:
+      tags:
+      - products
+      summary: Detalhar um produto
+      operationId: getProductById
+      parameters:
+      - name: id
+        in: path
+        description: ID do produto
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Detalhes do produto retornados com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+        "404":
+          description: Produto não encontrado
+        "500":
+          description: Erro interno ao detalhar produto
+      x-swagger-router-controller: Products
+    put:
+      tags:
+      - products
+      summary: Atualizar um produto
+      operationId: updateProduct
+      parameters:
+      - name: id
+        in: path
+        description: ID do produto
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/products_id_body'
+        required: true
+      responses:
+        "200":
+          description: Produto atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+        "400":
+          description: "Erro ao atualizar produto, dados inválidos"
+        "404":
+          description: Produto não encontrado
+        "500":
+          description: Erro interno ao atualizar produto
+      x-swagger-router-controller: Products
+    delete:
+      tags:
+      - products
+      summary: Deletar um produto
+      operationId: deleteProduct
+      parameters:
+      - name: id
+        in: path
+        description: ID do produto
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Produto deletado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_5'
+        "404":
+          description: Produto não encontrado
+        "500":
+          description: Erro interno ao deletar produto
+      x-swagger-router-controller: Products
+components:
+  schemas:
+    signup_body:
+      required:
+      - email
+      - name
+      - password
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    inline_response_201:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+      example:
+        name: name
+        id: 0
+        email: email
+    login_body:
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    inline_response_200:
+      type: object
+      properties:
+        type:
+          type: string
+          example: bearer
+        token:
+          type: string
+      example:
+        type: bearer
+        token: token
+    sales_products:
+      type: object
+      properties:
+        productId:
+          type: integer
+        quantity:
+          type: integer
+    sales_body:
+      required:
+      - clientId
+      - products
+      type: object
+      properties:
+        clientId:
+          type: integer
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/sales_products'
+    inline_response_201_1:
+      type: object
+      properties:
+        id:
+          type: integer
+        clientId:
+          type: integer
+        totalPrice:
+          type: number
+          format: float
+        saleDate:
+          type: string
+          format: date-time
+      example:
+        clientId: 6
+        totalPrice: 1.4658129
+        id: 0
+        saleDate: 2000-01-23T04:56:07.000+00:00
+    inline_response_200_1:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        cpf:
+          type: string
+      example:
+        name: name
+        cpf: cpf
+        id: 0
+    clients_addresses:
+      type: object
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        postalCode:
+          type: string
+    clients_body:
+      required:
+      - cpf
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        cpf:
+          type: string
+        phones:
+          type: array
+          items:
+            type: string
+        addresses:
+          $ref: '#/components/schemas/clients_addresses'
+    inline_response_201_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        cpf:
+          type: string
+        phones:
+          type: array
+          items:
+            type: string
+        addresses:
+          type: object
+          properties:
+            street:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            postalCode:
+              type: string
+          example:
+            city: city
+            street: street
+            postalCode: postalCode
+            state: state
+      example:
+        addresses:
+          city: city
+          street: street
+          postalCode: postalCode
+          state: state
+        name: name
+        cpf: cpf
+        phones:
+        - phones
+        - phones
+        id: 0
+    inline_response_200_2:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        cpf:
+          type: string
+        phones:
+          type: array
+          items:
+            type: string
+        addresses:
+          type: object
+          properties:
+            street:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            postalCode:
+              type: string
+          example:
+            city: city
+            street: street
+            postalCode: postalCode
+            state: state
+        sales:
+          type: array
+          items:
+            type: object
+            properties:
+              saleDate:
+                type: string
+                format: date-time
+              totalPrice:
+                type: number
+                format: float
+              saledProducts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    productId:
+                      type: integer
+                    quantity:
+                      type: integer
+                    unitPrice:
+                      type: number
+                      format: float
+                  example:
+                    unitPrice: 5.637377
+                    quantity: 5
+                    productId: 1
+            example:
+              saledProducts:
+              - unitPrice: 5.637377
+                quantity: 5
+                productId: 1
+              - unitPrice: 5.637377
+                quantity: 5
+                productId: 1
+              totalPrice: 6.0274563
+              saleDate: 2000-01-23T04:56:07.000+00:00
+      example:
+        addresses:
+          city: city
+          street: street
+          postalCode: postalCode
+          state: state
+        name: name
+        cpf: cpf
+        phones:
+        - phones
+        - phones
+        id: 0
+        sales:
+        - saledProducts:
+          - unitPrice: 5.637377
+            quantity: 5
+            productId: 1
+          - unitPrice: 5.637377
+            quantity: 5
+            productId: 1
+          totalPrice: 6.0274563
+          saleDate: 2000-01-23T04:56:07.000+00:00
+        - saledProducts:
+          - unitPrice: 5.637377
+            quantity: 5
+            productId: 1
+          - unitPrice: 5.637377
+            quantity: 5
+            productId: 1
+          totalPrice: 6.0274563
+          saleDate: 2000-01-23T04:56:07.000+00:00
+    clients_id_body:
+      type: object
+      properties:
+        name:
+          type: string
+        cpf:
+          type: string
+        phones:
+          type: array
+          items:
+            type: string
+        addresses:
+          $ref: '#/components/schemas/clients_addresses'
+    inline_response_200_3:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Cliente e vendas associadas deletados com sucesso.
+      example:
+        message: Cliente e vendas associadas deletados com sucesso.
+    inline_response_200_4:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+      example:
+        price: 6.0274563
+        name: name
+        id: 0
+    products_body:
+      required:
+      - name
+      - price
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+    products_id_body:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+    inline_response_200_5:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Produto deletado com sucesso
+      example:
+        message: Produto deletado com sucesso

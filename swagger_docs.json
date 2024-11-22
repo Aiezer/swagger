@@ -1,0 +1,889 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CommerceX API",
+    "description": "API de vendas da aplicação CommerceX",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/signup": {
+      "/auth": "",
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Cadastrar um novo usuário",
+        "operationId": "signup",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email já existe"
+          },
+          "500": {
+            "description": "Erro ao criar usuário"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login de usuário",
+        "operationId": "login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token gerado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "bearer"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais inválidas"
+          }
+        }
+      }
+    },
+    "/sales": {
+      "post": {
+        "tags": [
+          "sales"
+        ],
+        "summary": "Criar uma venda",
+        "operationId": "createSale",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "clientId": {
+                    "type": "integer"
+                  },
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "productId": {
+                          "type": "integer"
+                        },
+                        "quantity": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "clientId",
+                  "products"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Venda criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "clientId": {
+                      "type": "integer"
+                    },
+                    "totalPrice": {
+                      "type": "number",
+                      "format": "float"
+                    },
+                    "saleDate": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na criação da venda"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      }
+    },
+    "/clients": {
+      "get": {
+        "tags": [
+          "clients"
+        ],
+        "summary": "Listar todos os clientes",
+        "operationId": "getClients",
+        "responses": {
+          "200": {
+            "description": "Lista de clientes retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "cpf": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro ao listar clientes"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "clients"
+        ],
+        "summary": "Criar um novo cliente",
+        "operationId": "createClient",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "cpf": {
+                    "type": "string"
+                  },
+                  "phones": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "addresses": {
+                    "type": "object",
+                    "properties": {
+                      "street": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string"
+                      },
+                      "postalCode": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "cpf"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cliente criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "cpf": {
+                      "type": "string"
+                    },
+                    "phones": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "addresses": {
+                      "type": "object",
+                      "properties": {
+                        "street": {
+                          "type": "string"
+                        },
+                        "city": {
+                          "type": "string"
+                        },
+                        "state": {
+                          "type": "string"
+                        },
+                        "postalCode": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao criar cliente, dados inválidos"
+          },
+          "500": {
+            "description": "Erro interno ao criar cliente"
+          }
+        }
+      }
+    },
+    "/clients/{id}": {
+      "get": {
+        "tags": [
+          "clients"
+        ],
+        "summary": "Detalhar um cliente",
+        "operationId": "getClientById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID do cliente"
+          },
+          {
+            "in": "query",
+            "name": "month",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filtrar vendas por mês"
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filtrar vendas por ano"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do cliente retornados com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "cpf": {
+                      "type": "string"
+                    },
+                    "phones": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "addresses": {
+                      "type": "object",
+                      "properties": {
+                        "street": {
+                          "type": "string"
+                        },
+                        "city": {
+                          "type": "string"
+                        },
+                        "state": {
+                          "type": "string"
+                        },
+                        "postalCode": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "sales": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "saleDate": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "totalPrice": {
+                            "type": "number",
+                            "format": "float"
+                          },
+                          "saledProducts": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "productId": {
+                                  "type": "integer"
+                                },
+                                "quantity": {
+                                  "type": "integer"
+                                },
+                                "unitPrice": {
+                                  "type": "number",
+                                  "format": "float"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cliente não encontrado"
+          },
+          "500": {
+            "description": "Erro interno ao detalhar cliente"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "clients"
+        ],
+        "summary": "Atualizar um cliente",
+        "operationId": "updateClient",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID do cliente"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "cpf": {
+                    "type": "string"
+                  },
+                  "phones": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "addresses": {
+                    "type": "object",
+                    "properties": {
+                      "street": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string"
+                      },
+                      "postalCode": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cliente atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "cpf": {
+                      "type": "string"
+                    },
+                    "phones": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "addresses": {
+                      "type": "object",
+                      "properties": {
+                        "street": {
+                          "type": "string"
+                        },
+                        "city": {
+                          "type": "string"
+                        },
+                        "state": {
+                          "type": "string"
+                        },
+                        "postalCode": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao atualizar cliente, dados inválidos"
+          },
+          "404": {
+            "description": "Cliente não encontrado"
+          },
+          "500": {
+            "description": "Erro interno ao atualizar cliente"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "clients"
+        ],
+        "summary": "Deletar um cliente",
+        "operationId": "deleteClient",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID do cliente"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente deletado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Cliente e vendas associadas deletados com sucesso."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cliente não encontrado"
+          },
+          "500": {
+            "description": "Erro interno ao deletar cliente"
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Listar todos os produtos",
+        "operationId": "getProducts",
+        "responses": {
+          "200": {
+            "description": "Lista de produtos retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "price": {
+                        "type": "number",
+                        "format": "float"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro ao listar produtos"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Criar um novo produto",
+        "operationId": "createProduct",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number",
+                    "format": "float"
+                  }
+                },
+                "required": [
+                  "name",
+                  "price"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Produto criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "number",
+                      "format": "float"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao criar produto, dados inválidos"
+          },
+          "500": {
+            "description": "Erro interno ao criar produto"
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Detalhar um produto",
+        "operationId": "getProductById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID do produto"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do produto retornados com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "number",
+                      "format": "float"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produto não encontrado"
+          },
+          "500": {
+            "description": "Erro interno ao detalhar produto"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Atualizar um produto",
+        "operationId": "updateProduct",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID do produto"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number",
+                    "format": "float"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produto atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "number",
+                      "format": "float"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao atualizar produto, dados inválidos"
+          },
+          "404": {
+            "description": "Produto não encontrado"
+          },
+          "500": {
+            "description": "Erro interno ao atualizar produto"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Deletar um produto",
+        "operationId": "deleteProduct",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID do produto"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto deletado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Produto deletado com sucesso"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produto não encontrado"
+          },
+          "500": {
+            "description": "Erro interno ao deletar produto"
+          }
+        }
+      }
+    }
+  }
+}
